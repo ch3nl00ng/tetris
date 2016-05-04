@@ -60,11 +60,11 @@ function drawCurrentGame(currentGame, ctx) {
 
     // Draw Grid
     var gridX = Math.floor((ctx.canvas.width - gridWidth) / 2);
-    var gridY = 10;
+    var gridY = ctx.canvas.height - 10 - gridHeight;
     for (var i = 0; i < grid.length; i++) {
         for (var j = 0; j < grid[i].length; j++) {
             var x = j * Square.prototype.width + gridX;
-            var y = i * Square.prototype.width + gridY;
+            var y = gridY + gridHeight - (i + 1) * Square.prototype.width;
             if (grid[i][j]) {
                 new Square(new Point(x, y), grid[i][j]).draw(ctx);
             }
@@ -75,17 +75,65 @@ function drawCurrentGame(currentGame, ctx) {
     }
 
     // Draw Info (level and score)
-    var infoWidth = Square.prototype.width * 4;
-    var infoHeight = Square.prototype.width * 4;
-    var infoX = gridX - infoWidth - Square.prototype.width;
-    var infoY = gridY + gridHeight - infoHeight - Square.prototype.width;
-    ctx.setLineDash([1, 2]);
-    ctx.strokeStyle = 'darkgreen';
-    ctx.rect(infoX, infoY, infoWidth, infoHeight);
-    ctx.stroke();
+    function drawInfo(x, y, width, height, text) {
+        ctx.setLineDash([1, 2]);
+        ctx.strokeStyle = 'darkgreen';
+        ctx.rect(x, y, width, height);
+        ctx.stroke();
 
-    ctx.font = "30px Arial";
-    ctx.fillText("Level", infoX + Square.prototype.width, infoY + Square.prototype.width * 4);
+        if (text != undefined) {
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, x + Math.floor(width / 2), y + Math.floor(height / 2));
+        }
+    }
+
+    // Level display
+    drawInfo(
+        gridX - Square.prototype.width * 5,
+        gridY + Square.prototype.width,
+        Square.prototype.width * 4,
+        Square.prototype.width * 2,
+        currentGame.level.display
+    );
+
+    // Score display
+    drawInfo(
+        gridX - Square.prototype.width * 5,
+        gridY + Square.prototype.width * 4,
+        Square.prototype.width * 4,
+        Square.prototype.width * 2,
+        currentGame.score
+    );
+
+    // Next display
+    var nextX = gridX + gridWidth + Square.prototype.width;
+    var nextY = gridY + Square.prototype.width;
+    var nextW = Square.prototype.width * 4;
+    var nextH = Square.prototype.width * 5;
+    drawInfo(nextX, nextY, nextW, nextH);
+
+    if (currentGame.nextTetromino) {
+        var tGrid = currentGame.nextTetromino.tetromino.grid;
+        var tColor = currentGame.nextTetromino.color;
+        var tH = tGrid.length * Square.prototype.width;
+        var tW = tGrid[0].length * Square.prototype.width;
+
+        var tX = nextX + Math.floor((nextW - tW) / 2);
+        var tY = nextY + Math.floor((nextH - tH) / 2);
+
+        for (var i = 0; i < tGrid.length; i++) {
+            for (var j = 0; j < tGrid[i].length; j++) {
+                if (tGrid[i][j]) {
+                    var x = j * Square.prototype.width + tX;
+                    var y = tY + tH - (i + 1) * Square.prototype.width;
+                    new Square(new Point(x, y), tColor).draw(ctx);
+                }
+            }
+        }
+    }
+
 }
 
 (() => {
@@ -100,8 +148,8 @@ function drawCurrentGame(currentGame, ctx) {
 
         var ctx = canvas.getContext("2d");
 
-        ctx.translate(0, canvas.height);
-        ctx.scale(1, -1);
+        // ctx.translate(0, canvas.height);
+        // ctx.scale(1, -1);
 
         var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, Tetromino.prototype.COLORS);
         var currentGame = playField.getCurrentGame();
