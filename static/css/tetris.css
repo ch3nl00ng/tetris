@@ -1,0 +1,11 @@
+#tetris-canvas-container {
+    width: 600px;
+    height: 600px;
+    margin: 0 auto;
+}
+
+#tetris-canvas {
+    background-color: DarkSeaGreen;
+    opacity: 0.5;
+    z-index: 99999;
+}
