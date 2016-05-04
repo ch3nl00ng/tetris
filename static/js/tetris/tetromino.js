@@ -4,15 +4,7 @@ var Tetromino = function(grid) {
     this.grid = grid;
 };
 
-Tetromino.prototype.height = function() {
-    return this.squareMap.length;
-};
-
-Tetromino.prototype.width = function() {
-    return this.squareMap[0].length;
-};
-
-Tetromino.prototype.cwRotate = function() {
+Tetromino.prototype.getCwRotate = function() {
     var h = this.grid.length;
     var w = this.grid[0].length;
 
@@ -25,10 +17,10 @@ Tetromino.prototype.cwRotate = function() {
         rotatedGrid.push(row);
     }
 
-    this.grid = rotatedGrid;
+    return new Tetromino(rotatedGrid);
 };
 
-Tetromino.prototype.ccwRotate = function() {
+Tetromino.prototype.getCcwRotate = function() {
     var h = this.grid.length;
     var w = this.grid[0].length;
 
@@ -41,10 +33,10 @@ Tetromino.prototype.ccwRotate = function() {
         rotatedGrid.push(row);
     }
 
-    this.grid = rotatedGrid;
+    return new (rotatedGrid);
 };
 
-Tetromino.prototype.COLORS = ['black', 'darkgreen'];
+Tetromino.prototype.COLORS = ['black', 'darkgreen', 'ForestGreen'];
 Tetromino.prototype.TETROMINOS = [
     new Tetromino([
         [1],

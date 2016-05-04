@@ -54,13 +54,15 @@ EmptySquare.prototype.draw = function(ctx) {
 };
 
 function drawCurrentGame(currentGame, ctx) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
     var grid = currentGame.grid;
     var gridHeight = grid.length * Square.prototype.width;
     var gridWidth = grid[0].length * Square.prototype.width;
 
     // Draw Grid
     var gridX = Math.floor((ctx.canvas.width - gridWidth) / 2);
-    var gridY = ctx.canvas.height - 10 - gridHeight;
+    var gridY = ctx.canvas.height - Square.prototype.width - gridHeight;
     for (var i = 0; i < grid.length; i++) {
         for (var j = 0; j < grid[i].length; j++) {
             var x = j * Square.prototype.width + gridX;
@@ -151,10 +153,30 @@ function drawCurrentGame(currentGame, ctx) {
         // ctx.translate(0, canvas.height);
         // ctx.scale(1, -1);
 
-        var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, Tetromino.prototype.COLORS);
-        var currentGame = playField.getCurrentGame();
-        drawCurrentGame(currentGame, ctx);
+        var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, Tetromino.prototype.COLORS, (currentGame) => drawCurrentGame(currentGame, ctx));
 
-        console.log(JSON.stringify(currentGame, null, 2));
+        playField.startGame();
+
+        window.onkeydown = function(e) {
+            var key = e.keyCode ? e.keyCode : e.which;
+
+            switch (key) {
+                case 37:
+                    playField.moveLeft();
+                    break;
+                case 38:
+                    playField.rotate();
+                    break;
+                case 39:
+                    playField.moveRight();
+                    break;
+                case 40:
+                    playField.drop();
+                    break;
+                default:
+            }
+
+            e.preventDefault();
+        }
     });
 })();
