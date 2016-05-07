@@ -13,27 +13,38 @@ PlayField.prototype.Status = {
     NEW: 0,
     IN_PROGRESS: 1,
     GAMEOVER: 2,
+    ELIMINATING: 3,
+    DROPPING: 4,
 };
 
-PlayField.prototype.Level = function(display, nextLevelScore, scoreDelta, interval) {
+PlayField.prototype.Level = function(display, nextLevelScore, scoreDelta, interval, nextLevel) {
     this.display = display;
     this.nextLevelScore = nextLevelScore;
     this.scoreDelta = scoreDelta;
     this.interval = interval;
+    this.nextLevel = nextLevel;
 };
 
-PlayField.prototype.LEVELS = [
-    new PlayField.prototype.Level('Level 1', 10, 1, 1000),
-    new PlayField.prototype.Level('Level 2', 30, 2, 900),
-    new PlayField.prototype.Level('Level 3', 60, 3, 800),
-    new PlayField.prototype.Level('Level 4', 100, 4, 700),
-    new PlayField.prototype.Level('Level 5', 150, 5, 600),
-    new PlayField.prototype.Level('Level 6', 210, 6, 500),
-    new PlayField.prototype.Level('Level 7', 280, 7, 400),
-    new PlayField.prototype.Level('Level 8', 360, 8, 300),
-    new PlayField.prototype.Level('Level 9', 450, 9, 200),
-    new PlayField.prototype.Level('Level Max', null, 10, 100),
-];
+PlayField.prototype.LEVELS = (function() {
+    var levels = [
+        new PlayField.prototype.Level('Level 1', 1, 1, 700),
+        new PlayField.prototype.Level('Level 2', 3, 2, 600),
+        new PlayField.prototype.Level('Level 3', 6, 3, 600),
+        new PlayField.prototype.Level('Level 4', 10, 4, 500),
+        new PlayField.prototype.Level('Level 5', 15, 5, 500),
+        new PlayField.prototype.Level('Level 6', 21, 6, 400),
+        new PlayField.prototype.Level('Level 7', 28, 7, 400),
+        new PlayField.prototype.Level('Level 8', 36, 8, 300),
+        new PlayField.prototype.Level('Level 9', 45, 9, 300),
+        new PlayField.prototype.Level('Level Max', null, 10, 200),
+    ]
+
+    for (var i = 0; i < levels.length - 1; i++) {
+        levels[i].nextLevel = levels[i + 1];
+    }
+
+    return levels;
+})();
 
 PlayField.prototype.redraw = function() {
     if (this.displayCallback) {
@@ -43,9 +54,9 @@ PlayField.prototype.redraw = function() {
 
 PlayField.prototype.reset = function() {
     this.status = PlayField.prototype.Status.NEW;
+    this.level = PlayField.prototype.LEVELS[0];
     this.score = 0;
     this.colorIdx = 0;
-    this.levelIdx = 0;
     this.lastEliminatedRows = [];
 
     // Init grid
@@ -81,23 +92,15 @@ PlayField.prototype.getCurrentGame = function() {
         status: this.status,
         score: this.score,
         nextTetromino: this.nextTetromino,
-        level: PlayField.prototype.LEVELS[this.levelIdx],
+        level: this.level,
         lastEliminatedRows: this.lastEliminatedRows,
     };
 };
 
 PlayField.prototype.startGame = function() {
     this.putNextTetromino();
-
-    var next = () => {
-        if (this.status != PlayField.prototype.Status.GAMEOVER) {
-            this.fall();
-            setTimeout(next, this.LEVELS[this.levelIdx].interval);
-        }
-        this.redraw();
-    };
-
-    next();
+    this.status = PlayField.prototype.Status.IN_PROGRESS;
+    this.fall();
 };
 
 PlayField.prototype.putNextTetromino = function() {
@@ -221,15 +224,36 @@ PlayField.prototype.eliminate = function() {
         newGrid.push(newLine);
     }
 
-    this.grid = newGrid;
+    if (eliminatedRows.length > 0) {
+        this.status = PlayField.prototype.Status.ELIMINATING;
+        this.lastEliminatedRows = eliminatedRows;
+        // Eliminating redraw
+        this.redraw();
 
-    var level = this.LEVELS[this.levelIdx];
-    this.score += eliminatedRows.length * level.scoreDelta;
-    if (level.nextLevelScore && this.score >= level.nextLevelScore) {
-        this.levelIdx++;
+        setTimeout(
+            function() {
+                this.score += eliminatedRows.length * this.level.scoreDelta;
+                if (this.level.nextLevelScore && this.score >= this.level.nextLevelScore) {
+                    this.level = this.level.nextLevel;
+                }
+
+                this.lastEliminatedRows = [];
+                this.grid = newGrid;
+
+                this.redraw();
+                this.status = PlayField.prototype.Status.IN_PROGRESS;
+
+                this.putNextTetromino();
+                this.fall();
+
+            }.bind(this),
+            this.level.interval
+        );
     }
-
-    return eliminatedRows;
+    else {
+        this.putNextTetromino();
+        this.fall();
+    }
 };
 
 PlayField.prototype.getCurrentGrid = function() {
@@ -253,34 +277,48 @@ PlayField.prototype.getCurrentGrid = function() {
     return currentGrid;
 };
 
-PlayField.prototype.fall = function() {
+PlayField.prototype.fall = function(toBottom) {
     if (!this.fallingTetromino) {
         return;
     }
 
-    this.lastEliminatedRows = [];
-
     var x = this.fallingTetromino.x;
     var y = this.fallingTetromino.y;
 
-    if (this.canMoveTo(x - 1, y)) {
-        this.fallingTetromino.x = x - 1;
+    if (toBottom) {
+        while (this.canMoveTo(x - 1, y)) {
+            this.fallingTetromino.x = x - 1;
+            x = x - 1;
+        }
+        this.redraw();
+        this.fall();
         return;
+    }
+    else {
+        if (this.canMoveTo(x - 1, y)) {
+            this.fallingTetromino.x = x - 1;
+            this.redraw();
+            this.fallingTimeoutId = setTimeout(this.fall.bind(this), this.level.interval);
+            return;
+        }
     }
 
     if (this.isGameOver()) {
         this.status = PlayField.prototype.Status.GAMEOVER;
+        this.redraw();
         return;
     }
 
     this.persistTetromino();
-    this.putNextTetromino();
 
-    this.lastEliminatedRows = this.eliminate();
-    this.fall();
+    this.eliminate();
 };
 
 PlayField.prototype.moveLeft = function() {
+    if (this.status != PlayField.prototype.Status.IN_PROGRESS) {
+        return;
+    }
+
     if (!this.fallingTetromino) {
         return;
     }
@@ -295,6 +333,10 @@ PlayField.prototype.moveLeft = function() {
 }
 
 PlayField.prototype.moveRight = function() {
+    if (this.status != PlayField.prototype.Status.IN_PROGRESS) {
+        return;
+    }
+
     if (!this.fallingTetromino) {
         return;
     }
@@ -309,6 +351,10 @@ PlayField.prototype.moveRight = function() {
 }
 
 PlayField.prototype.rotate = function() {
+    if (this.status != PlayField.prototype.Status.IN_PROGRESS) {
+        return;
+    }
+
     if (!this.fallingTetromino) {
         return;
     }
@@ -325,17 +371,11 @@ PlayField.prototype.rotate = function() {
 }
 
 PlayField.prototype.drop = function() {
-    if (!this.fallingTetromino) {
+    if (this.status != PlayField.prototype.Status.IN_PROGRESS) {
         return;
     }
 
-    var currentFallingTetromino = this.fallingTetromino;
-    var x = this.fallingTetromino.x;
-    var y = this.fallingTetromino.y;
+    clearTimeout(this.fallingTimeoutId);
 
-    while (this.fallingTetromino == currentFallingTetromino) {
-        this.fall();
-    }
-
-    this.redraw();
+    this.fall(true);
 }

@@ -85,6 +85,7 @@ function drawCurrentGame(currentGame, ctx) {
 
         if (text != undefined) {
             ctx.font = "20px Arial";
+            ctx.fillStyle = "black";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(text, x + Math.floor(width / 2), y + Math.floor(height / 2));
@@ -153,7 +154,10 @@ function drawCurrentGame(currentGame, ctx) {
         // ctx.translate(0, canvas.height);
         // ctx.scale(1, -1);
 
-        var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, Tetromino.prototype.COLORS, (currentGame) => drawCurrentGame(currentGame, ctx));
+        var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, Tetromino.prototype.COLORS, (currentGame) => {
+            drawCurrentGame(currentGame, ctx);
+            console.log(currentGame.level);
+        });
 
         playField.startGame();
 
