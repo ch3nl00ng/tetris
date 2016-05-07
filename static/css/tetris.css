@@ -1,3 +1,7 @@
+body {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
 @media only screen and (max-height: 768) {
     #tetris-cell {
         min-width: 400px;
@@ -28,6 +32,6 @@
 
 #tetris-canvas {
     background-color: DarkSeaGreen;
-    opacity: 0.8;
+    opacity: 0.6;
     z-index: 99999;
 }

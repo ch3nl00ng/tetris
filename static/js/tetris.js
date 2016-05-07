@@ -142,6 +142,11 @@ function drawCurrentGame(currentGame, ctx) {
         }
     }
 
+    if (currentGame.status == PlayField.prototype.Status.GAMEOVER) {
+        $('#tetris-control-btn').html('Re:Start');
+        $('#tetris-control-btn').data('action', 'resetAndStart');
+    }
+
 }
 
 (() => {
@@ -180,6 +185,12 @@ function drawCurrentGame(currentGame, ctx) {
                     $(this).html("Pause");
                     $(this).data('action', 'pause');
                     break;
+                case 'resetAndStart':
+                    playField.reset();
+                    playField.startGame();
+                    $(this).html("Pause");
+                    $(this).data('action', 'pause');
+                    break;
                 default:
             }
         });
@@ -190,20 +201,22 @@ function drawCurrentGame(currentGame, ctx) {
             switch (key) {
                 case 37:
                     playField.moveLeft();
+                    e.preventDefault();
                     break;
                 case 38:
                     playField.rotate();
+                    e.preventDefault();
                     break;
                 case 39:
                     playField.moveRight();
+                    e.preventDefault();
                     break;
                 case 40:
                     playField.drop();
+                    e.preventDefault();
                     break;
                 default:
             }
-
-            e.preventDefault();
         }
     });
 })();
