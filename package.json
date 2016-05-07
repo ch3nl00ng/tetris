@@ -1,0 +1,26 @@
+{
+  "name": "tetris",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "ejs": "^2.4.1",
+    "pug": "^2.0.0-alpha6",
+    "express": "^4.13.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/p6vital/tetris.git"
+  },
+  "author": "p6vital",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/p6vital/tetris/issues"
+  },
+  "homepage": "https://github.com/p6vital/tetris#readme"
+}
