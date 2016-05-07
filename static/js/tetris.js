@@ -154,16 +154,35 @@ function drawCurrentGame(currentGame, ctx) {
         canvas.width = container.width();
         canvas.height = container.height();
 
-        var ctx = canvas.getContext("2d");
+        Square.prototype.width = Math.floor(canvas.height / 24);
 
-        // ctx.translate(0, canvas.height);
-        // ctx.scale(1, -1);
+        var ctx = canvas.getContext("2d");
 
         var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, Tetromino.prototype.COLORS, (currentGame) => {
             drawCurrentGame(currentGame, ctx);
         });
 
-        playField.startGame();
+        $('#tetris-control-btn').data('action', 'start');
+        $('#tetris-control-btn').on('click', function() {
+            switch ($(this).data('action')) {
+                case 'start':
+                    playField.startGame();
+                    $(this).html("Pause");
+                    $(this).data('action', 'pause');
+                    break;
+                case 'pause':
+                    playField.pauseGame();
+                    $(this).html("Resume");
+                    $(this).data('action', 'resume');
+                    break;
+                case 'resume':
+                    playField.startGame();
+                    $(this).html("Pause");
+                    $(this).data('action', 'pause');
+                    break;
+                default:
+            }
+        });
 
         window.onkeydown = function(e) {
             var key = e.keyCode ? e.keyCode : e.which;

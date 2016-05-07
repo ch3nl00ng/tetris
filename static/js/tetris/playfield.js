@@ -14,7 +14,7 @@ PlayField.prototype.Status = {
     IN_PROGRESS: 1,
     GAMEOVER: 2,
     ELIMINATING: 3,
-    DROPPING: 4,
+    PAUSED: 4,
 };
 
 PlayField.prototype.Level = function(display, nextLevelScore, scoreDelta, interval, nextLevel) {
@@ -70,8 +70,9 @@ PlayField.prototype.reset = function() {
     }
 
     this.nextTetromino = this.generateNextTetromino();
-
     this.redraw();
+
+    this.putNextTetromino();
 };
 
 PlayField.prototype.generateNextTetromino = function() {
@@ -98,9 +99,20 @@ PlayField.prototype.getCurrentGame = function() {
 };
 
 PlayField.prototype.startGame = function() {
-    this.putNextTetromino();
+    if (this.status == PlayField.prototype.Status.IN_PROGRESS) {
+        return;
+    }
+
     this.status = PlayField.prototype.Status.IN_PROGRESS;
     this.fall();
+};
+
+PlayField.prototype.pauseGame = function() {
+    if (this.status != PlayField.prototype.Status.IN_PROGRESS) {
+        return;
+    }
+    clearTimeout(this.fallingTimeoutId);
+    this.status = PlayField.prototype.Status.PAUSED;
 };
 
 PlayField.prototype.putNextTetromino = function() {

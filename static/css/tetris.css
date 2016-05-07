@@ -1,11 +1,33 @@
+@media only screen and (max-height: 768) {
+    #tetris-cell {
+        min-width: 400px;
+    }
+    #tetris-card {
+        width: 100%;
+        min-height: 408px;
+    }
+    #tetris-canvas-container {
+        width: 100%;
+        min-height: 408px;
+    }
+}
+
+#tetris-card {
+    width: 100%;
+    min-height: 552px;
+}
+
 #tetris-canvas-container {
-    width: 600px;
-    height: 600px;
-    margin: 0 auto;
+    width: 100%;
+    min-height: 552px;
+}
+
+#tetris-cell {
+    min-width: 500px;
 }
 
 #tetris-canvas {
     background-color: DarkSeaGreen;
-    opacity: 0.5;
+    opacity: 0.8;
     z-index: 99999;
 }
