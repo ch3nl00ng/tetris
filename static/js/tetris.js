@@ -59,6 +59,7 @@ function drawCurrentGame(currentGame, ctx) {
     var grid = currentGame.grid;
     var gridHeight = grid.length * Square.prototype.width;
     var gridWidth = grid[0].length * Square.prototype.width;
+    var eliminatedRows = currentGame.lastEliminatedRows;
 
     // Draw Grid
     var gridX = Math.floor((ctx.canvas.width - gridWidth) / 2);
@@ -67,7 +68,11 @@ function drawCurrentGame(currentGame, ctx) {
         for (var j = 0; j < grid[i].length; j++) {
             var x = j * Square.prototype.width + gridX;
             var y = gridY + gridHeight - (i + 1) * Square.prototype.width;
-            if (grid[i][j]) {
+            if (!grid[i][j]) {
+                new EmptySquare(new Point(x, y), 'darkgreen').draw(ctx);
+            }
+            // If not in eliminated rows
+            else if (eliminatedRows.indexOf(i) < 0) {
                 new Square(new Point(x, y), grid[i][j]).draw(ctx);
             }
             else {
@@ -156,7 +161,6 @@ function drawCurrentGame(currentGame, ctx) {
 
         var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, Tetromino.prototype.COLORS, (currentGame) => {
             drawCurrentGame(currentGame, ctx);
-            console.log(currentGame.level);
         });
 
         playField.startGame();
