@@ -154,14 +154,14 @@ function drawCurrentGame(currentGame, ctx) {
 
 }
 
-(() => {
-    $(document).ready(() => {
+(function() {
+    $(document).ready(function() {
         console.log('tetris');
 
         var container = $('#tetris-canvas-container');
         var canvas = $('#tetris-canvas')[0];
         var ctx = canvas.getContext("2d");
-        var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, (currentGame) => {
+        var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, function(currentGame) {
             drawCurrentGame(currentGame, ctx);
         });
 
