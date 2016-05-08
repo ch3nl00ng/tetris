@@ -65,7 +65,7 @@ function drawCurrentGame(currentGame, ctx) {
 
     // Draw Grid
     var gridX = Math.floor((ctx.canvas.width - gridWidth) / 2);
-    var gridY = ctx.canvas.height - Square.prototype.width - gridHeight;
+    var gridY = Math.floor((ctx.canvas.height - gridHeight) / 2);
     for (var i = 0; i < grid.length; i++) {
         for (var j = 0; j < grid[i].length; j++) {
             var x = j * Square.prototype.width + gridX;
@@ -92,7 +92,7 @@ function drawCurrentGame(currentGame, ctx) {
         ctx.stroke();
 
         if (text != undefined) {
-            ctx.font = "18px Arial";
+            ctx.font = (Square.prototype.width - 4) + 'px Arial';
             ctx.fillStyle = gridColor;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
@@ -160,14 +160,7 @@ function drawCurrentGame(currentGame, ctx) {
 
         var container = $('#tetris-canvas-container');
         var canvas = $('#tetris-canvas')[0];
-
-        canvas.width = container.width();
-        canvas.height = container.height();
-
-        Square.prototype.width = Math.floor(canvas.height / 24);
-
         var ctx = canvas.getContext("2d");
-
         var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, (currentGame) => {
             drawCurrentGame(currentGame, ctx);
         });
@@ -226,5 +219,21 @@ function drawCurrentGame(currentGame, ctx) {
                 default:
             }
         }
+
+        function resizeCanvas(playField) {
+            var pfHeight = window.innerHeight - $('#tetris-card .mdl-card__title').outerHeight() - $('#tetris-card .mdl-card__actions').outerHeight();
+            var pfWidth = container.width();
+            var squareWidth = Math.floor(Math.min(pfWidth / (playField.grid[0].length + 12), pfHeight / (playField.grid.length + 2)));
+
+            canvas.height = pfHeight;
+            canvas.width = pfWidth;
+            Square.prototype.width = squareWidth;
+
+            drawCurrentGame(playField.getCurrentGame(), ctx);
+        }
+        $(window).on('resize', function() {
+            resizeCanvas(playField);
+        });
+        resizeCanvas(playField);
     });
 })();
