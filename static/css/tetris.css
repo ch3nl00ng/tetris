@@ -6,3 +6,7 @@ body {
     background-color: black;
     z-index: 99999;
 }
+
+#tetris-card-actions {
+    text-align: right;
+}
