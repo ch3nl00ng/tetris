@@ -199,6 +199,10 @@ function drawCurrentGame(currentGame, ctx) {
         });
 
         window.onkeydown = function(e) {
+            if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
+                return;
+            }
+
             var key = e.keyCode ? e.keyCode : e.which;
 
             switch (key) {
@@ -236,18 +240,30 @@ function drawCurrentGame(currentGame, ctx) {
             });
 
             mc.on('swipeleft', function(e) {
+                if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
+                    return;
+                }
                 playField.moveLeft();
                 e.preventDefault();
             });
             mc.on('swiperight', function(e) {
+                if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
+                    return;
+                }
                 playField.moveRight();
                 e.preventDefault();
             });
             mc.on('swipeup', function(e) {
+                if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
+                    return;
+                }
                 playField.rotate();
                 e.preventDefault();
             });
             mc.on('swipedown', function(e) {
+                if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
+                    return;
+                }
                 playField.drop();
                 e.preventDefault();
             });
