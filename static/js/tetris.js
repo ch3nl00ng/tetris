@@ -241,28 +241,28 @@ function drawCurrentGame(currentGame, ctx) {
 
             mc.on('swipeleft', function(e) {
                 if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
-                    return;
+                    return true;
                 }
                 playField.moveLeft();
                 e.preventDefault();
             });
             mc.on('swiperight', function(e) {
                 if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
-                    return;
+                    return true;
                 }
                 playField.moveRight();
                 e.preventDefault();
             });
             mc.on('swipeup', function(e) {
                 if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
-                    return;
+                    return true;
                 }
                 playField.rotate();
                 e.preventDefault();
             });
             mc.on('swipedown', function(e) {
                 if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
-                    return;
+                    return true;
                 }
                 playField.drop();
                 e.preventDefault();
