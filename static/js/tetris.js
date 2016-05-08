@@ -230,7 +230,7 @@ function drawCurrentGame(currentGame, ctx) {
         };
 
         if (Hammer) {
-            var mc = new Hammer.Manager(window, {
+            var mc = new Hammer.Manager(canvas, {
                 recognizers: [
                     [Hammer.Tap],
                     [Hammer.Swipe, {
@@ -241,28 +241,28 @@ function drawCurrentGame(currentGame, ctx) {
 
             mc.on('swipeleft', function(e) {
                 if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
-                    return true;
+                    return;
                 }
                 playField.moveLeft();
                 e.preventDefault();
             });
             mc.on('swiperight', function(e) {
                 if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
-                    return true;
+                    return;
                 }
                 playField.moveRight();
                 e.preventDefault();
             });
             mc.on('swipeup', function(e) {
                 if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
-                    return true;
+                    return;
                 }
                 playField.rotate();
                 e.preventDefault();
             });
             mc.on('swipedown', function(e) {
                 if (playField.status != PlayField.prototype.Status.IN_PROGRESS) {
-                    return true;
+                    return;
                 }
                 playField.drop();
                 e.preventDefault();
