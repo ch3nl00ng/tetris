@@ -220,6 +220,9 @@ function drawCurrentGame(currentGame, ctx) {
                     playField.drop();
                     e.preventDefault();
                     break;
+                case 32:
+                    $('#tetris-control-btn').trigger('click');
+                    break;
                 default:
             }
         }

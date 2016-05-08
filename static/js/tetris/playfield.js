@@ -92,7 +92,7 @@ PlayField.prototype.getCurrentGame = function() {
 };
 
 PlayField.prototype.startGame = function() {
-    if (this.status == PlayField.prototype.Status.IN_PROGRESS) {
+    if (this.status == PlayField.prototype.Status.IN_PROGRESS || this.status == PlayField.prototype.Status.ELIMINATING) {
         return;
     }
 
@@ -101,7 +101,7 @@ PlayField.prototype.startGame = function() {
 };
 
 PlayField.prototype.pauseGame = function() {
-    if (this.status != PlayField.prototype.Status.IN_PROGRESS) {
+    if (this.status != PlayField.prototype.Status.IN_PROGRESS && this.status != PlayField.prototype.Status.ELIMINATING) {
         return;
     }
     clearTimeout(this.fallingTimeoutId);
@@ -234,7 +234,7 @@ PlayField.prototype.eliminate = function() {
         // Eliminating redraw
         this.redraw();
 
-        setTimeout(
+        this.fallingTimeoutId = setTimeout(
             function() {
                 this.score += eliminatedRows.length * eliminatedRows.length * this.level.scoreDelta;
                 if (this.level.nextLevelScore && this.score >= this.level.nextLevelScore) {
