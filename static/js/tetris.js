@@ -64,7 +64,7 @@ function drawCurrentGame(currentGame, ctx) {
     var eliminatedRows = currentGame.lastEliminatedRows;
 
     // Draw Grid
-    var gridX = Math.floor((ctx.canvas.width - gridWidth) / 2);
+    var gridX = Math.floor((ctx.canvas.width - gridWidth - Square.prototype.width * 5) / 2);
     var gridY = Math.floor((ctx.canvas.height - gridHeight) / 2);
     for (var i = 0; i < grid.length; i++) {
         for (var j = 0; j < grid[i].length; j++) {
@@ -102,29 +102,11 @@ function drawCurrentGame(currentGame, ctx) {
         ctx.closePath();
     }
 
-    // Level display
-    drawInfo(
-        gridX - Square.prototype.width * 5,
-        gridY + Square.prototype.width,
-        Square.prototype.width * 4,
-        Square.prototype.width * 2,
-        currentGame.level.display
-    );
-
-    // Score display
-    drawInfo(
-        gridX - Square.prototype.width * 5,
-        gridY + Square.prototype.width * 4,
-        Square.prototype.width * 4,
-        Square.prototype.width * 2,
-        currentGame.score
-    );
-
     // Next display
-    var nextX = gridX + gridWidth + Square.prototype.width;
-    var nextY = gridY + Square.prototype.width;
     var nextW = Square.prototype.width * 4;
     var nextH = Square.prototype.width * 5;
+    var nextX = gridX + gridWidth + Square.prototype.width;
+    var nextY = gridY;
     drawInfo(nextX, nextY, nextW, nextH);
 
     if (currentGame.nextTetromino) {
@@ -146,6 +128,28 @@ function drawCurrentGame(currentGame, ctx) {
             }
         }
     }
+
+    // Level display
+    var levelY = nextY + nextH + Square.prototype.width;
+    var levelH = Square.prototype.width * 2;
+    drawInfo(
+        gridX + gridWidth + Square.prototype.width,
+        levelY,
+        Square.prototype.width * 4,
+        levelH,
+        currentGame.level.display
+    );
+
+    // Score display
+    var scoreY = levelY + levelH + Square.prototype.width;
+    var scoreH = Square.prototype.width * 2;
+    drawInfo(
+        gridX + gridWidth + Square.prototype.width,
+        scoreY,
+        Square.prototype.width * 4,
+        scoreH,
+        currentGame.score
+    );
 
     if (currentGame.status == PlayField.prototype.Status.GAMEOVER) {
         $('#tetris-control-btn').html('Re:Start');
@@ -223,7 +227,7 @@ function drawCurrentGame(currentGame, ctx) {
         function resizeCanvas(playField) {
             var pfHeight = window.innerHeight - $('#tetris-card .mdl-card__title').outerHeight() - $('#tetris-card .mdl-card__actions').outerHeight();
             var pfWidth = container.width();
-            var squareWidth = Math.floor(Math.min(pfWidth / (playField.grid[0].length + 12), pfHeight / (playField.grid.length + 2)));
+            var squareWidth = Math.floor(Math.min(pfWidth / (playField.grid[0].length + 5), pfHeight / (playField.grid.length + 2)));
 
             canvas.height = pfHeight;
             canvas.width = pfWidth;
