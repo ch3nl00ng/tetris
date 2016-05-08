@@ -1,6 +1,7 @@
 /*global $*/
 /*global PlayField*/
 /*global Tetromino*/
+/*global Hammer*/
 
 var Point = function(x, y) {
     this.x = x;
@@ -224,22 +225,33 @@ function drawCurrentGame(currentGame, ctx) {
             }
         };
 
-        $(window).on("swiperight", function(e) {
-            playField.moveRight();
-            e.preventDefault();
-        });
-        $(window).on("swipeleft", function(e) {
-            playField.moveLeft();
-            e.preventDefault();
-        });
-        $(window).on("swipeup", function(e) {
-            playField.rotate();
-            e.preventDefault();
-        });
-        $(window).on("swipedown", function(e) {
-            playField.drop();
-            e.preventDefault();
-        });
+        if (Hammer) {
+            var mc = new Hammer.Manager(window, {
+                recognizers: [
+                    [Hammer.Tap],
+                    [Hammer.Swipe, {
+                        direction: Hammer.DIRECTION_ALL
+                    }],
+                ]
+            });
+
+            mc.on('swipeleft', function(e) {
+                playField.moveLeft();
+                e.preventDefault();
+            });
+            mc.on('swiperight', function(e) {
+                playField.moveRight();
+                e.preventDefault();
+            });
+            mc.on('swipeup', function(e) {
+                playField.rotate();
+                e.preventDefault();
+            });
+            mc.on('swipedown', function(e) {
+                playField.drop();
+                e.preventDefault();
+            });
+        }
 
         function resizeCanvas(playField) {
             var pfHeight = window.innerHeight - $('#tetris-card .mdl-card__title').outerHeight() - $('#tetris-card .mdl-card__actions').outerHeight();
