@@ -1,7 +1,8 @@
 /*global Tetromino*/
 
-var Tetromino = function(grid) {
+var Tetromino = function(grid, color) {
     this.grid = grid;
+    this.color = color;
 };
 
 Tetromino.prototype.getCwRotate = function() {
@@ -17,7 +18,7 @@ Tetromino.prototype.getCwRotate = function() {
         rotatedGrid.push(row);
     }
 
-    return new Tetromino(rotatedGrid);
+    return new Tetromino(rotatedGrid, this.color);
 };
 
 Tetromino.prototype.getCcwRotate = function() {
@@ -33,43 +34,42 @@ Tetromino.prototype.getCcwRotate = function() {
         rotatedGrid.push(row);
     }
 
-    return new (rotatedGrid);
+    return new Tetromino(rotatedGrid, this.color);
 };
 
-Tetromino.prototype.COLORS = ['black', 'darkgreen', 'ForestGreen'];
 Tetromino.prototype.TETROMINOS = [
     new Tetromino([
         [1],
         [1],
         [1],
         [1]
-    ]),
+    ], 'blue'),
     new Tetromino([
         [1, 1],
         [1, 1]
-    ]),
+    ], 'grey'),
     new Tetromino([
         [1, 0],
         [1, 0],
         [1, 1]
-    ]),
+    ], 'purple'),
     new Tetromino([
         [0, 1],
         [0, 1],
         [1, 1]
-    ]),
+    ], 'yellow'),
     new Tetromino([
         [0, 1],
         [1, 1],
         [1, 0]
-    ]),
+    ], 'red'),
     new Tetromino([
         [1, 0],
         [1, 1],
         [0, 1]
-    ]),
+    ], 'orange'),
     new Tetromino([
         [1, 1, 1],
         [0, 1, 0]
-    ]),
+    ], 'green'),
 ];

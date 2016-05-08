@@ -1,5 +1,5 @@
 body {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(45, 57, 64, 0.8);
 }
 
 @media only screen and (max-height: 768) {
@@ -31,7 +31,6 @@ body {
 }
 
 #tetris-canvas {
-    background-color: DarkSeaGreen;
-    opacity: 0.6;
+    background-color: black;
     z-index: 99999;
 }

@@ -22,7 +22,7 @@ app.use('/test', function(req, res) {
 });
 
 app.use('/', function(req, res) {
-    res.send('Hello world');
+   res.render('index.html');
 });
 
 // Note: Uses the CLOUD9 port

@@ -1,6 +1,5 @@
-var PlayField = function(height, width, tetrominos, colors, displayCallback) {
+var PlayField = function(height, width, tetrominos, displayCallback) {
     this.tetrominos = tetrominos;
-    this.colors = colors;
     this.height = height;
     this.width = width;
     this.displayCallback = displayCallback;
@@ -17,25 +16,24 @@ PlayField.prototype.Status = {
     PAUSED: 4,
 };
 
-PlayField.prototype.Level = function(display, nextLevelScore, scoreDelta, interval, nextLevel) {
+PlayField.prototype.Level = function(display, nextLevelScore, scoreDelta, interval) {
     this.display = display;
     this.nextLevelScore = nextLevelScore;
     this.scoreDelta = scoreDelta;
     this.interval = interval;
-    this.nextLevel = nextLevel;
 };
 
 PlayField.prototype.LEVELS = (function() {
     var levels = [
-        new PlayField.prototype.Level('Level 1', 1, 1, 700),
-        new PlayField.prototype.Level('Level 2', 3, 2, 600),
-        new PlayField.prototype.Level('Level 3', 6, 3, 600),
-        new PlayField.prototype.Level('Level 4', 10, 4, 500),
-        new PlayField.prototype.Level('Level 5', 15, 5, 500),
-        new PlayField.prototype.Level('Level 6', 21, 6, 400),
-        new PlayField.prototype.Level('Level 7', 28, 7, 400),
-        new PlayField.prototype.Level('Level 8', 36, 8, 300),
-        new PlayField.prototype.Level('Level 9', 45, 9, 300),
+        new PlayField.prototype.Level('Level 1', 10, 1, 700),
+        new PlayField.prototype.Level('Level 2', 30, 2, 600),
+        new PlayField.prototype.Level('Level 3', 60, 3, 600),
+        new PlayField.prototype.Level('Level 4', 100, 4, 500),
+        new PlayField.prototype.Level('Level 5', 150, 5, 500),
+        new PlayField.prototype.Level('Level 6', 210, 6, 400),
+        new PlayField.prototype.Level('Level 7', 280, 7, 400),
+        new PlayField.prototype.Level('Level 8', 360, 8, 300),
+        new PlayField.prototype.Level('Level 9', 450, 9, 300),
         new PlayField.prototype.Level('Level Max', null, 10, 200),
     ]
 
@@ -56,7 +54,6 @@ PlayField.prototype.reset = function() {
     this.status = PlayField.prototype.Status.NEW;
     this.level = PlayField.prototype.LEVELS[0];
     this.score = 0;
-    this.colorIdx = 0;
     this.lastEliminatedRows = [];
 
     // Init grid
@@ -78,12 +75,8 @@ PlayField.prototype.reset = function() {
 PlayField.prototype.generateNextTetromino = function() {
     var i = Math.floor(this.tetrominos.length * Math.random());
 
-    var colorIdx = this.colorIdx;
-    this.colorIdx = (colorIdx + 1) % this.colors.length;
-
     return {
         tetromino: this.tetrominos[i],
-        color: this.colors[colorIdx],
     };
 };
 
@@ -134,7 +127,6 @@ PlayField.prototype.persistTetromino = function(grid) {
     var tetromino = this.fallingTetromino.tetromino;
     var x = this.fallingTetromino.x;
     var y = this.fallingTetromino.y;
-    var color = this.fallingTetromino.color;
 
     for (var i = 0; i < tetromino.grid.length; i++) {
         for (var j = 0; j < tetromino.grid[0].length; j++) {
@@ -143,7 +135,7 @@ PlayField.prototype.persistTetromino = function(grid) {
                     && x + i < this.grid.length //
                     && y + j >= 0 //
                     && y + j < this.grid[0].length) {
-                    grid[x + i][y + j] = color;
+                    grid[x + i][y + j] = tetromino.color;
                 }
             }
         }
@@ -244,7 +236,7 @@ PlayField.prototype.eliminate = function() {
 
         setTimeout(
             function() {
-                this.score += eliminatedRows.length * this.level.scoreDelta;
+                this.score += eliminatedRows.length * eliminatedRows.length * this.level.scoreDelta;
                 if (this.level.nextLevelScore && this.score >= this.level.nextLevelScore) {
                     this.level = this.level.nextLevel;
                 }

@@ -53,6 +53,8 @@ EmptySquare.prototype.draw = function(ctx) {
     ctx.stroke();
 };
 
+var gridColor = 'white';
+
 function drawCurrentGame(currentGame, ctx) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -69,32 +71,35 @@ function drawCurrentGame(currentGame, ctx) {
             var x = j * Square.prototype.width + gridX;
             var y = gridY + gridHeight - (i + 1) * Square.prototype.width;
             if (!grid[i][j]) {
-                new EmptySquare(new Point(x, y), 'darkgreen').draw(ctx);
+                new EmptySquare(new Point(x, y), gridColor).draw(ctx);
             }
             // If not in eliminated rows
             else if (eliminatedRows.indexOf(i) < 0) {
                 new Square(new Point(x, y), grid[i][j]).draw(ctx);
             }
             else {
-                new EmptySquare(new Point(x, y), 'darkgreen').draw(ctx);
+                new EmptySquare(new Point(x, y), gridColor).draw(ctx);
             }
         }
     }
 
     // Draw Info (level and score)
     function drawInfo(x, y, width, height, text) {
+        ctx.beginPath();
         ctx.setLineDash([1, 2]);
-        ctx.strokeStyle = 'darkgreen';
+        ctx.strokeStyle = gridColor;
         ctx.rect(x, y, width, height);
         ctx.stroke();
 
         if (text != undefined) {
-            ctx.font = "20px Arial";
-            ctx.fillStyle = "black";
+            ctx.font = "18px Arial";
+            ctx.fillStyle = gridColor;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(text, x + Math.floor(width / 2), y + Math.floor(height / 2));
         }
+
+        ctx.closePath();
     }
 
     // Level display
@@ -124,7 +129,7 @@ function drawCurrentGame(currentGame, ctx) {
 
     if (currentGame.nextTetromino) {
         var tGrid = currentGame.nextTetromino.tetromino.grid;
-        var tColor = currentGame.nextTetromino.color;
+        var tColor = currentGame.nextTetromino.tetromino.color;
         var tH = tGrid.length * Square.prototype.width;
         var tW = tGrid[0].length * Square.prototype.width;
 
@@ -134,9 +139,9 @@ function drawCurrentGame(currentGame, ctx) {
         for (var i = 0; i < tGrid.length; i++) {
             for (var j = 0; j < tGrid[i].length; j++) {
                 if (tGrid[i][j]) {
-                    var x = j * Square.prototype.width + tX;
-                    var y = tY + tH - (i + 1) * Square.prototype.width;
-                    new Square(new Point(x, y), tColor).draw(ctx);
+                    var nX = j * Square.prototype.width + tX;
+                    var nY = tY + tH - (i + 1) * Square.prototype.width;
+                    new Square(new Point(nX, nY), tColor).draw(ctx);
                 }
             }
         }
@@ -163,7 +168,7 @@ function drawCurrentGame(currentGame, ctx) {
 
         var ctx = canvas.getContext("2d");
 
-        var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, Tetromino.prototype.COLORS, (currentGame) => {
+        var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, (currentGame) => {
             drawCurrentGame(currentGame, ctx);
         });
 
