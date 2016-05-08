@@ -222,7 +222,24 @@ function drawCurrentGame(currentGame, ctx) {
                     break;
                 default:
             }
-        }
+        };
+
+        $(window).on("swiperight", function(e) {
+            playField.moveRight();
+            e.preventDefault();
+        });
+        $(window).on("swipeleft", function(e) {
+            playField.moveLeft();
+            e.preventDefault();
+        });
+        $(window).on("swipeup", function(e) {
+            playField.rotate();
+            e.preventDefault();
+        });
+        $(window).on("swipedown", function(e) {
+            playField.drop();
+            e.preventDefault();
+        });
 
         function resizeCanvas(playField) {
             var pfHeight = window.innerHeight - $('#tetris-card .mdl-card__title').outerHeight() - $('#tetris-card .mdl-card__actions').outerHeight();
