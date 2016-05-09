@@ -60,7 +60,7 @@ function initializeTetrisCard(card) {
     function resizeCanvas(playField) {
         var pfHeight = window.innerHeight - $(card).find('.mdl-card__title').outerHeight() - $(card).find('.mdl-card__actions').outerHeight();
         var pfWidth = container.width();
-        var squareWidth = Math.floor(Math.min(pfWidth / (playField.grid[0].length + 5), pfHeight / (playField.grid.length + 2)));
+        var squareWidth = Math.floor(Math.min(pfWidth / (playField.grid[0].length + 7), pfHeight / (playField.grid.length + 2)));
 
         canvas.height = pfHeight;
         canvas.width = pfWidth;
