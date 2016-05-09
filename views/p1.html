@@ -6,7 +6,7 @@
   <meta name="description" content="Tetris">
   <meta name="author" content="p6vital">
 
-  <title>Tetris</title>
+  <title>Some Hurdles in Life</title>
 
   <!-- MDL assets-->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -38,6 +38,13 @@
 
 <body>
     <div class="content-grid mdl-grid">
+      <%- include( 'card/image.html', {
+          colUnit: 12,
+          title: 'P1 加油！',
+          imageUrl: 'https://farm8.staticflickr.com/7438/8727662800_28dc1abbcd_c.jpg',
+          text: 'P1加油！我也会努力的。一切都会好的。',
+          signoff: 'P6于2016年5月8日@西雅图'
+        }) %>
       <%- include( 'card/tetris.html', {cardId: '1', colUnit: 12}) %>
     </div>
 </body>

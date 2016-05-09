@@ -20,6 +20,9 @@ app.use('/css', express.static(__dirname + '/static/css'));
 app.use('/tetris', function(req, res) {
     res.render('tetris.html');
 });
+app.use('/p1', function(req, res) {
+    res.render('p1.html');
+});
 app.use('/test', function(req, res) {
     res.render('test.pug', {
         title: 'TMD',
