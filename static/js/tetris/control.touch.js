@@ -26,9 +26,10 @@ TetrisControl.prototype.disableInputControl = function(inputControl, nextControl
     if (!this.mc) {
         return;
     }
-
+    this.mc.get('swipe').set({
+        enable: false
+    });
     this.mc.off('swipeleft swiperight swipeup swipedown');
-
 };
 
 TetrisControl.prototype.enableInputControl = function(inputControl, nextControl) {
@@ -36,20 +37,12 @@ TetrisControl.prototype.enableInputControl = function(inputControl, nextControl)
         return;
     }
 
-    this.mc.on('swipeleft', function(e) {
-        inputControl.moveLeft();
-        e.preventDefault();
+    this.mc.get('swipe').set({
+        enable: true
     });
-    this.mc.on('swiperight', function(e) {
-        inputControl.moveRight();
-        e.preventDefault();
-    });
-    this.mc.on('swipeup', function(e) {
-        inputControl.rotate();
-        e.preventDefault();
-    });
-    this.mc.on('swipedown', function(e) {
-        inputControl.drop();
-        e.preventDefault();
-    });
+
+    this.mc.on('swipeleft', inputControl.moveLeft);
+    this.mc.on('swiperight', inputControl.moveRight);
+    this.mc.on('swipeup', inputControl.rotate);
+    this.mc.on('swipedown', inputControl.drop);
 };
