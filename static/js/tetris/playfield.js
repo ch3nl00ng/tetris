@@ -1,13 +1,15 @@
-var PlayField = function(height, width, tetrominos, displayCallback) {
+function PlayField(height, width, tetrominos, displayCallback, statusChangeCallback) {
+    this.id = new Date();
+
     this.tetrominos = tetrominos;
     this.height = height;
     this.width = width;
     this.displayCallback = displayCallback;
+    this.statusChangeCallback = statusChangeCallback;
 
     this.reset();
 }
 
-/* Public static */
 PlayField.prototype.Status = {
     NEW: 0,
     IN_PROGRESS: 1,
@@ -46,12 +48,18 @@ PlayField.prototype.LEVELS = (function() {
 
 PlayField.prototype.redraw = function() {
     if (this.displayCallback) {
-        this.displayCallback(this.getCurrentGame());
+        this.displayCallback(this.getGameDisplay());
+    }
+};
+
+PlayField.prototype.setStatus = function(status) {
+    this.status = status;
+    if (this.statusChangeCallback) {
+        this.statusChangeCallback(this.getGameControl(), this.status, this.id);
     }
 };
 
 PlayField.prototype.reset = function() {
-    this.status = PlayField.prototype.Status.NEW;
     this.level = PlayField.prototype.LEVELS[0];
     this.score = 0;
     this.lastEliminatedRows = [];
@@ -67,9 +75,9 @@ PlayField.prototype.reset = function() {
     }
 
     this.nextTetromino = this.generateNextTetromino();
-    this.redraw();
 
-    this.putNextTetromino();
+    this.setStatus(PlayField.prototype.Status.NEW);
+    this.redraw();
 };
 
 PlayField.prototype.generateNextTetromino = function() {
@@ -80,7 +88,7 @@ PlayField.prototype.generateNextTetromino = function() {
     };
 };
 
-PlayField.prototype.getCurrentGame = function() {
+PlayField.prototype.getGameDisplay = function() {
     return {
         grid: this.getCurrentGrid(),
         status: this.status,
@@ -91,12 +99,40 @@ PlayField.prototype.getCurrentGame = function() {
     };
 };
 
+PlayField.prototype.getGameControl = function() {
+    return {
+        inputControl: {
+            moveLeft: this.moveLeft.bind(this),
+            moveRight: this.moveRight.bind(this),
+            rotate: this.rotate.bind(this),
+            drop: this.drop.bind(this),
+        },
+        startGame : this.startGame.bind(this),
+        restartGame: this.restartGame.bind(this),
+        pauseGame: this.pauseGame.bind(this),
+        resumeGame: this.resumeGame.bind(this),
+    };
+};
+
 PlayField.prototype.startGame = function() {
+    if (this.status != PlayField.prototype.Status.NEW) {
+        return;
+    }
+
+    this.putNextTetromino();
+    this.setStatus(PlayField.prototype.Status.IN_PROGRESS);
+    this.fall();
+};
+
+PlayField.prototype.restartGame = function() {
     if (this.status == PlayField.prototype.Status.IN_PROGRESS || this.status == PlayField.prototype.Status.ELIMINATING) {
         return;
     }
 
-    this.status = PlayField.prototype.Status.IN_PROGRESS;
+    this.reset();
+    this.putNextTetromino();
+
+    this.setStatus(PlayField.prototype.Status.IN_PROGRESS);
     this.fall();
 };
 
@@ -105,7 +141,15 @@ PlayField.prototype.pauseGame = function() {
         return;
     }
     clearTimeout(this.fallingTimeoutId);
-    this.status = PlayField.prototype.Status.PAUSED;
+    this.setStatus(PlayField.prototype.Status.PAUSED);
+};
+
+PlayField.prototype.resumeGame = function() {
+    if (this.status != PlayField.prototype.Status.PAUSED) {
+        return;
+    }
+    this.setStatus(PlayField.prototype.Status.IN_PROGRESS);
+    this.fall();
 };
 
 PlayField.prototype.putNextTetromino = function() {
@@ -229,7 +273,7 @@ PlayField.prototype.eliminate = function() {
     }
 
     if (eliminatedRows.length > 0) {
-        this.status = PlayField.prototype.Status.ELIMINATING;
+        this.setStatus(PlayField.prototype.Status.ELIMINATING);
         this.lastEliminatedRows = eliminatedRows;
         // Eliminating redraw
         this.redraw();
@@ -245,7 +289,7 @@ PlayField.prototype.eliminate = function() {
                 this.grid = newGrid;
 
                 this.redraw();
-                this.status = PlayField.prototype.Status.IN_PROGRESS;
+                this.setStatus(PlayField.prototype.Status.IN_PROGRESS);
 
                 this.putNextTetromino();
                 this.fall();
@@ -308,7 +352,7 @@ PlayField.prototype.fall = function(toBottom) {
     }
 
     if (this.isGameOver()) {
-        this.status = PlayField.prototype.Status.GAMEOVER;
+        this.setStatus(PlayField.prototype.Status.GAMEOVER);
         this.redraw();
         return;
     }
