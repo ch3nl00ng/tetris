@@ -9,32 +9,6 @@
         <button id="tetris-control-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
             Start
         </button>
-        <button id="tetris-dialog-button-<%= cardId %>" type="button" class="mdl-button show-modal">How to play</button>
-        <dialog id="tetris-dialog-<%= cardId %>" class="mdl-dialog" style="text-align:left;">
-            <div class="mdl-dialog__title">How to play</div>
-            <div class="mdl-dialog__content">
-                <p>
-                    <%= is_desktop ? 'Please use keyboard direction keys to control.' : 'Please swipe to control.' %>
-                </p>
-            </div>
-            <div class="mdl-dialog__actions">
-                <button type="button" class="mdl-button close">Close</button>
-            </div>
-        </dialog>
-        <script>
-            var dialog = document.querySelector('dialog');
-            var showModalButton = document.querySelector('.show-modal');
-            if (!dialog.showModal) {
-                dialogPolyfill.registerDialog(dialog);
-            }
-            showModalButton.addEventListener('click', function() {
-                dialog.showModal();
-            });
-            dialog.querySelector('.close').addEventListener('click', function() {
-                dialog.close();
-            });
-        </script>
-    </div>
     <div class="mdl-card__menu">
     </div>
 </div>
