@@ -2,11 +2,11 @@ body {
     background-color: rgba(45, 57, 64, 0.8);
 }
 
-#tetris-canvas {
+.tetris-canvas {
     background-color: black;
     z-index: 99999;
 }
 
-#tetris-card-actions {
+.tetris-card-actions {
     text-align: right;
 }
