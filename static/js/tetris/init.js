@@ -35,27 +35,29 @@ function initializeTetrisCard(card) {
                 case PlayField.prototype.Status.NEW:
                     nextCrtlText = 'Start';
                     nextControl = gameControl.startGame;
+                    instructionBtn.prop('disabled', false);
                     break;
                 case PlayField.prototype.Status.GAMEOVER:
                     nextCrtlText = 'Re:start';
                     nextControl = gameControl.restartGame;
+                    instructionBtn.prop('disabled', false);
                     break;
                 case PlayField.prototype.Status.PAUSED:
                     nextCrtlText = 'Resume';
                     nextControl = gameControl.resumeGame;
+                    instructionBtn.prop('disabled', false);
                     break;
                 default:
                     nextCrtlText = 'Pause';
                     nextControl = gameControl.pauseGame;
+                    instructionBtn.prop('disabled', true);
                     break;
             }
 
-            if (status == PlayField.prototype.Status.IN_PROGRESS || status == PlayField.prototype.Status.ELIMINATING) {
-                instructionBtn.prop('disabled', true);
+            if (status == PlayField.prototype.Status.IN_PROGRESS) {
                 tetrisControl.enableInputControl(gameControl.inputControl, playFieldId);
             }
             else {
-                instructionBtn.prop('disabled', false);
                 tetrisControl.disableInputControl(gameControl.inputControl, playFieldId);
             }
 
