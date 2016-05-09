@@ -16,6 +16,18 @@ function initializeTetrisCard(card) {
             drawCurrentGame(currentGame, ctx);
         }, //
         function(gameControl, status, playFieldId) {
+
+            var instructionBtn = $(card).find('.tetris-instruction-btn');
+            instructionBtn.on('click', function() {
+                $(card).find('.tetris-flip-card').toggleClass('flipped');
+                $(this).toggleClass('mdl-button--colored');
+            });
+
+            $(card).find('.tetris-flip-back').on('click', function() {
+                $(card).find('.tetris-flip-card').removeClass('flipped');
+                instructionBtn.removeClass('mdl-button--colored');
+            });
+
             var nextControl = undefined;
             var nextCrtlText = undefined;
 
@@ -38,10 +50,12 @@ function initializeTetrisCard(card) {
                     break;
             }
 
-            if (status == PlayField.prototype.Status.IN_PROGRESS) {
+            if (status == PlayField.prototype.Status.IN_PROGRESS || status == PlayField.prototype.Status.ELIMINATING) {
+                instructionBtn.prop('disabled', true);
                 tetrisControl.enableInputControl(gameControl.inputControl, playFieldId);
             }
             else {
+                instructionBtn.prop('disabled', false);
                 tetrisControl.disableInputControl(gameControl.inputControl, playFieldId);
             }
 
@@ -53,16 +67,6 @@ function initializeTetrisCard(card) {
                 controlBtn.unbind('click.tetris_control');
                 controlBtn.bind('click.tetris_control', nextControl);
             }
-
-            $(card).find('.tetris-instruction-btn').on('click', function() {
-                $(card).find('.tetris-flip-card').toggleClass('flipped');
-                $(this).toggleClass('mdl-button--colored');
-            });
-            
-            $(card).find('.tetris-flip-back').on('click', function(){
-                $(card).find('.tetris-flip-card').removeClass('flipped');
-                $(card).find('.tetris-instruction-btn').removeClass('mdl-button--colored');
-            });
         }
     );
 
