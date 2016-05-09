@@ -2,23 +2,48 @@
     <div class="mdl-card__title">
         <h2 class="mdl-card__title-text">Tetris</h2>
     </div>
-    <div class="mdl-card__media">
-        <canvas id="tetris-canvas-<%= cardId %>" class="tetris-canvas"></canvas>
+    <div class="tetris-flip-container mdl-card__media">
+        <div class="tetris-flip-card">
+            <div class="tetris-flip-front">
+                <canvas id="tetris-canvas-<%= cardId %>" class="tetris-canvas"></canvas>
+            </div>
+            <div class="tetris-flip-back">
+                <h2>Instruction</h2>
+                <% if (is_desktop) { %>
+                    <h5>Please use keyboard to play.</h5>
+                    <h6>Left: move left</h6>
+                    <h6>Right: move right</h6>
+                    <h6>Up: rotate</h6>
+                    <h6>Down: drop</h6>
+                    <h6>Space: start/pause/resume game</h6>
+                <% } else { %>
+                    <h5>Please swipe on game board to play.</h5>
+                    <h6>Swipe left: move left</h6>
+                    <h6>Swipe right: move right</h6>
+                    <h6>Swipe up: rotate</h6>
+                    <h6>Swipe down: drop</h6>
+                    <h6>Tap: start/pause/resume game</h6>
+                <% } %>
+            </div>
+        </div>
     </div>
     <div class="tetris-card-actions mdl-card__actions mdl-card--border">
-        <button id="tetris-control-btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+        <button class="tetris-control-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
             Start
         </button>
-    <div class="mdl-card__menu">
+        <button class="tetris-instruction-btn mdl-button mdl-js-button mdl-js-ripple-effect">
+            Instruction
+        </button>
+        <div class="mdl-card__menu">
+        </div>
     </div>
-</div>
-<script type="text/javascript">
-    /*global $*/
-    /*global initializeTetrisCard*/
-    (function() {
-        $(document).ready(function() {
-            console.log('Initializing tetris-card-<%= cardId %>');
-            initializeTetrisCard($('#tetris-card-<%= cardId %>'));
-        });
-    })();
-</script>
+    <script type="text/javascript">
+        /*global $*/
+        /*global initializeTetrisCard*/
+        (function() {
+            $(document).ready(function() {
+                console.log('Initializing tetris-card-<%= cardId %>');
+                initializeTetrisCard($('#tetris-card-<%= cardId %>'));
+            });
+        })();
+    </script>

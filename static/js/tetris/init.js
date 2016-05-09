@@ -47,13 +47,22 @@ function initializeTetrisCard(card) {
 
             tetrisControl.refreshNextControl(nextControl, playFieldId);
 
-            var controlBtn = $('#tetris-control-btn');
+            var controlBtn = $(card).find('.tetris-control-btn');
             if (nextControl) {
                 controlBtn.html(nextCrtlText);
                 controlBtn.unbind('click.tetris_control');
                 controlBtn.bind('click.tetris_control', nextControl);
             }
 
+            $(card).find('.tetris-instruction-btn').on('click', function() {
+                $(card).find('.tetris-flip-card').toggleClass('flipped');
+                $(this).toggleClass('mdl-button--colored');
+            });
+            
+            $(card).find('.tetris-flip-back').on('click', function(){
+                $(card).find('.tetris-flip-card').removeClass('flipped');
+                $(card).find('.tetris-instruction-btn').removeClass('mdl-button--colored');
+            });
         }
     );
 
@@ -64,6 +73,7 @@ function initializeTetrisCard(card) {
 
         canvas.height = pfHeight;
         canvas.width = pfWidth;
+        $(canvas).closest('.mdl-card__media').height(pfHeight);
         Square.prototype.width = squareWidth;
 
         drawCurrentGame(playField.getGameDisplay(), ctx);
