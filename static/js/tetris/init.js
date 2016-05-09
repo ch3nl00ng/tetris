@@ -11,22 +11,23 @@ function initializeTetrisCard(card) {
 
     var ctx = canvas.getContext("2d");
     var tetrisControl = new TetrisControl(canvas);
+
+    var instructionBtn = $(card).find('.tetris-instruction-btn');
+    instructionBtn.on('click', function() {
+        $(card).find('.tetris-flip-card').toggleClass('flipped');
+        $(this).toggleClass('mdl-button--colored');
+    });
+
+    $(card).find('.tetris-flip-back').on('click', function() {
+        $(card).find('.tetris-flip-card').removeClass('flipped');
+        instructionBtn.removeClass('mdl-button--colored');
+    });
+
     var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, //
         function(currentGame) {
             drawCurrentGame(currentGame, ctx);
         }, //
         function(gameControl, status, playFieldId) {
-
-            var instructionBtn = $(card).find('.tetris-instruction-btn');
-            instructionBtn.on('click', function() {
-                $(card).find('.tetris-flip-card').toggleClass('flipped');
-                $(this).toggleClass('mdl-button--colored');
-            });
-
-            $(card).find('.tetris-flip-back').on('click', function() {
-                $(card).find('.tetris-flip-card').removeClass('flipped');
-                instructionBtn.removeClass('mdl-button--colored');
-            });
 
             var nextControl = undefined;
             var nextCrtlText = undefined;
