@@ -13,14 +13,22 @@ function initializeTetrisCard(card) {
     var tetrisControl = new TetrisControl(canvas);
 
     var instructionBtn = $(card).find('.tetris-instruction-btn');
+    var controlBtn = $(card).find('.tetris-control-btn');
+    var flipCard = $('.tetris-flip-card');
     instructionBtn.on('click', function() {
-        $(card).find('.tetris-flip-card').toggleClass('flipped');
-        $(this).toggleClass('mdl-button--colored');
+        flipCard.toggleClass('flipped');
+        $(this).toggleClass('mdl-button--accent');
+
+        if (flipCard.hasClass('flipped')) {
+            controlBtn.prop('disabled', true);
+        } else {
+            controlBtn.prop('disabled', false);
+        }
     });
 
     $(card).find('.tetris-flip-back').on('click', function() {
-        $(card).find('.tetris-flip-card').removeClass('flipped');
-        instructionBtn.removeClass('mdl-button--colored');
+        flipCard.removeClass('flipped');
+        controlBtn.prop('disabled', false);
     });
 
     var playField = new PlayField(20, 10, Tetromino.prototype.TETROMINOS, //
@@ -64,7 +72,6 @@ function initializeTetrisCard(card) {
 
             tetrisControl.refreshNextControl(nextControl, playFieldId);
 
-            var controlBtn = $(card).find('.tetris-control-btn');
             if (nextControl) {
                 controlBtn.html(nextCrtlText);
                 controlBtn.unbind('click.tetris_control');
