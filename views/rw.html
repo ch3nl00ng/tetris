@@ -1,0 +1,32 @@
+<!doctype html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <meta name="description" content="RW Table">
+    <meta name="author" content="p6vital">
+
+    <title>RW Table</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $.get("/jsx/rw-table.jsx", function(reactJsx) {
+                var compiledReactJs = Babel.transform(reactJsx, {
+                    presets: ['react', 'es2015']
+                });
+
+                eval(compiledReactJs.code);
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="rw-table"></div>
+</body>
+
+</html>
