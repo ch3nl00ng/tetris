@@ -2,6 +2,7 @@ class RWTableRow extends React.Component {
     render() {
         return (
             <div className="rw-table-row">
+                <span>{this.props.region0}</span>&nbsp;
                 <span>{this.props.region}</span>&nbsp;
                 <span>{this.props.oddity}</span>&nbsp;
                 <span>{this.props.color}</span>&nbsp;
@@ -37,6 +38,7 @@ class RWTable extends React.Component {
 
     addNew() {
         var newRWTableRow = {
+            region0: $('.rw-table-new-region0').val(),
             region: $('.rw-table-new-region').val(),
             oddity: $('.rw-table-new-oddity').val(),
             color: $('.rw-table-new-color').val(),
@@ -51,11 +53,19 @@ class RWTable extends React.Component {
     }
 
     getRateDisplayDoms() {
+        var region0Map = {};
         var regionMap = {};
         var oddityMap = {};
         var colorMap = {};
         for (var i = 0; i < this.state.rwTableData.length; i++) {
             var rwTableRow = this.state.rwTableData[i];
+
+            if (!region0Map[rwTableRow.region0]) {
+                region0Map[rwTableRow.region0] = 1;
+            }
+            else {
+                region0Map[rwTableRow.region0]++;
+            }
 
             if (!regionMap[rwTableRow.region]) {
                 regionMap[rwTableRow.region] = 1;
@@ -77,6 +87,15 @@ class RWTable extends React.Component {
             else {
                 colorMap[rwTableRow.color.toUpperCase()]++;
             }
+        }
+
+        var region0Total = 0;
+        for (var region0 in region0Map) {
+            region0Total += region0Map[region0];
+        }
+        var region0RateDoms = [];
+        for (var region0 in region0Map) {
+            region0RateDoms.push(<span key={region0}>{region0}: {(region0Map[region0]/region0Total).toFixed(2)}&nbsp;</span>);
         }
 
         var regionTotal = 0;
@@ -109,6 +128,10 @@ class RWTable extends React.Component {
         return (
             <div>
                 <div>
+                    R0:&nbsp;
+                    {region0RateDoms}
+                </div>
+                <div>
                     R:&nbsp;
                     {regionRateDoms}
                 </div>
@@ -130,6 +153,7 @@ class RWTable extends React.Component {
             rowDoms.push(
                 <RWTableRow 
                     key={i}
+                    region0={this.state.rwTableData[i].region0}
                     region={this.state.rwTableData[i].region}
                     oddity={this.state.rwTableData[i].oddity}
                     color={this.state.rwTableData[i].color}
@@ -143,6 +167,14 @@ class RWTable extends React.Component {
             <div className="rw-table">
                 {rowDoms}
                 <div>
+                    <span>
+                        <input
+                            className="rw-table-new-region0"
+                            type="text"
+                            defaultValue="" 
+                        />
+                    </span>
+                    &nbsp;
                     <span>
                         <input
                             className="rw-table-new-region"
